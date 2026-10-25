@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Campus Signboard Recognition System</title>
+<!-- Leaflet CSS & JS for Interactive Campus GPS Map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <div class="wrap head">
+    <div>
+      <h1>Campus Signboard Recognition</h1>
+      <p>Computer Vision + OCR for Campus Navigation with GPS Tracking</p>
+    </div>
+    <div id="engines" class="badges"></div>
+  </div>
+  <nav class="wrap tabs">
+    <button class="tab active" data-tab="scan">Scan Signboard</button>
+    <button class="tab" data-tab="locations">Locations &amp; Map</button>
+    <button class="tab" data-tab="history">History &amp; Stats</button>
+  </nav>
+</header>
+
+<main class="wrap">
+<!-- ================= SCAN TAB ================= -->
+<section id="scan" class="panel active">
+  <div class="grid2">
+    <div class="card">
+      <h2>1. Choose a photo</h2>
+      <div class="input-actions">
+        <button type="button" id="startCameraBtn" class="btn small action-btn">📷 Open Camera</button>
+        <button type="button" id="browseBtn" class="btn small action-btn ghost">📁 Browse Image</button>
+      </div>
+
+      <!-- Live Camera Stream Box -->
+      <div id="cameraBox" class="camera-box hidden">
+        <div class="video-wrapper">
+          <video id="cameraVideo" autoplay playsinline muted></video>
+          <div class="camera-crosshair"></div>
+        </div>
+        <div class="camera-controls">
+          <button type="button" id="captureBtn" class="btn action-btn">📸 Capture Photo</button>
+          <button type="button" id="stopCameraBtn" class="btn ghost action-btn">❌ Close Camera</button>
+        </div>
+      </div>
+      <canvas id="cameraCanvas" class="hidden"></canvas>
+
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept="image/*" capture="environment" hidden>
+        <div><b>Tap to take / choose a photo</b><br><span>or drag &amp; drop an image here</span></div>
+      </label>
+      <img id="preview" class="preview hidden" alt="selected">
+      <button id="scanBtn" class="btn" disabled>Scan Signboard</button>
+      <h3>Or try a sample image</h3>
+      <div id="samples" class="samples"></div>
+    </div>
+
+    <div class="card">
+      <h2>2. Result &amp; GPS Navigation</h2>
+      <div id="status" class="muted">Select an image and press <b>Scan Signboard</b>.</div>
+      <div id="loader" class="loader hidden"></div>
+      <div id="out"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LOCATIONS TAB ================= -->
+<section id="locations" class="panel">
+  <!-- Interactive Campus Map -->
+  <div class="card map-card">
+    <div class="card-head">
+      <div>
+        <h2>🗺️ Campus Interactive GPS Map</h2>
+        <span class="muted">Live map showing all recognized signboards and campus landmarks</span>
+      </div>
+      <button type="button" id="locateMeBtn" class="btn small ghost">📡 Locate My GPS Position</button>
+    </div>
+    <div id="campusMap" class="campus-map"></div>
+    <div id="gpsStatus" class="gps-status-bar muted">Click on any campus marker to view details and directions.</div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2>Campus locations database</h2>
+      <div class="tablewrap"><table id="locTable"><thead><tr><th>Board text</th><th>Name</th><th>Block</th><th>Floor</th><th>GPS Coordinates</th><th></th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="card">
+      <h2>Add a signboard / location</h2>
+      <form id="addForm" class="form">
+        <label>Text written on the board *<input name="board_text" required placeholder="e.g. SWIMMING POOL"></label>
+        <label>Display name *<input name="name" required placeholder="e.g. Swimming Pool"></label>
+        <div class="row"><label>Block<input name="block"></label><label>Floor<input name="floor"></label></div>
+        <div class="row">
+          <label>Latitude (GPS)<input name="latitude" id="addLat" type="number" step="any" placeholder="e.g. 13.0112"></label>
+          <label>Longitude (GPS)<input name="longitude" id="addLng" type="number" step="any" placeholder="e.g. 80.2351"></label>
+        </div>
+        <button type="button" id="pickCurrentGpsBtn" class="btn small ghost action-btn" style="margin-bottom:12px;">📍 Use My Current GPS Location</button>
+        <label>Category<input name="category" placeholder="Facility / Department ..."></label>
+        <label>Timings<input name="timings"></label>
+        <label>Description<textarea name="description" rows="3"></textarea></label>
+        <button class="btn" type="submit">Save location</button>
+        <div id="addMsg" class="muted"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HISTORY TAB ================= -->
+<section id="history" class="panel">
+  <div class="stats" id="statCards"></div>
+  <div class="card">
+    <h2>Recent scans</h2>
+    <div class="tablewrap"><table id="histTable"><thead><tr><th>Time (UTC)</th><th>Text read</th><th>Matched location</th><th>Confidence</th><th>Seconds</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+</main>
+<footer class="wrap">Prototype &middot; Python, OpenCV, Tesseract OCR, Leaflet GPS Maps, Flask, SQLite</footer>
+<script src="/static/app.js"></script>
+</body>
+</html>
