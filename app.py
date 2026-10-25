@@ -20,6 +20,11 @@ def _ensure_samples():
             make_samples.compose(name, text, bg, fg, wk, seed, **kw)
 
 
+# Initialize DB and samples on startup (for both gunicorn and direct run)
+database.init_db()
+_ensure_samples()
+
+
 @app.route("/")
 def index():
     return render_template("index.html")

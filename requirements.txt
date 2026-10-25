@@ -1,8 +1,9 @@
 flask>=3.0
-opencv-python>=4.8
+opencv-python-headless>=4.8
 numpy>=1.24
 pytesseract>=0.3.10
 Pillow>=10.0
+gunicorn>=21.2.0
 # --- optional (better accuracy / trained model) ---
 # easyocr          # deep-learning OCR fallback (downloads ~100 MB on first use)
 # ultralytics      # use a trained YOLO file: models/signboard_best.pt
